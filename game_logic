@@ -1,0 +1,79 @@
+"""
+Game Logic Module
+Handles the core game mechanics and scoring
+"""
+
+class GameLogic:
+    """Manages game rules, scoring, and round results"""
+    
+    VALID_CHOICES = ['rock', 'paper', 'scissors']
+    WINNING_COMBINATIONS = {
+        'rock': 'scissors',
+        'paper': 'rock',
+        'scissors': 'paper'
+    }
+    
+    def __init__(self):
+        """Initialize game state"""
+        self.player_score = 0
+        self.computer_score = 0
+        self.rounds_played = 0
+    
+    def play_round(self, player_choice, computer_choice):
+        """
+        Play a single round and return the result
+        
+        Args:
+            player_choice (str): Player's choice
+            computer_choice (str): Computer's choice
+            
+        Returns:
+            str: Result of the round ('win', 'lose', 'tie')
+        """
+        if not self.is_valid_choice(player_choice):
+            raise ValueError(f"Invalid choice: {player_choice}")
+        
+        self.rounds_played += 1
+        
+        if player_choice == computer_choice:
+            return "It's a tie!"
+        
+        if self.WINNING_COMBINATIONS[player_choice] == computer_choice:
+            self.player_score += 1
+            return "You win!"
+        else:
+            self.computer_score += 1
+            return "Computer wins!"
+    
+    def is_valid_choice(self, choice):
+        """Check if the choice is valid"""
+        return choice.lower() in self.VALID_CHOICES
+    
+    def get_score(self):
+        """Get current score"""
+        return {
+            'player': self.player_score,
+            'computer': self.computer_score,
+            'rounds': self.rounds_played
+        }
+    
+    def display_score(self):
+        """Display current score"""
+        print(f"\n=== CURRENT SCORE ===")
+        print(f"You: {self.player_score}")
+        print(f"Computer: {self.computer_score}")
+        print(f"Rounds played: {self.rounds_played}")
+        
+        if self.player_score > self.computer_score:
+            print("You're in the lead! 🎉")
+        elif self.computer_score > self.player_score:
+            print("Computer is ahead! 🤖")
+        else:
+            print("It's a tie game! 🤝")
+        print("=" * 20)
+    
+    def reset_game(self):
+        """Reset the game state"""
+        self.player_score = 0
+        self.computer_score = 0
+        self.rounds_played = 0
