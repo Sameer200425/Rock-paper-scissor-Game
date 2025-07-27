@@ -1,0 +1,62 @@
+"""
+Rock Paper Scissors Game
+A simple console-based implementation of the classic game
+"""
+
+import random
+import os
+from game_logic import GameLogic
+from player import Player, ComputerPlayer
+from utils import clear_screen, display_banner
+
+def main():
+    """Main game loop"""
+    clear_screen()
+    display_banner()
+    
+    # Initialize game components
+    game = GameLogic()
+    player = Player()
+    computer = ComputerPlayer()
+    
+    print("Welcome to Rock Paper Scissors!")
+    print("Commands: 'rock', 'paper', 'scissors', 'score', 'quit'")
+    print("-" * 50)
+    
+    while True:
+        try:
+            # Get player choice
+            player_choice = player.get_choice()
+            
+            # Handle special commands
+            if player_choice == 'quit':
+                break
+            elif player_choice == 'score':
+                game.display_score()
+                continue
+            
+            # Get computer choice
+            computer_choice = computer.get_choice()
+            
+            # Play round
+            result = game.play_round(player_choice, computer_choice)
+            
+            # Display results
+            print(f"\nYou chose: {player_choice}")
+            print(f"Computer chose: {computer_choice}")
+            print(f"Result: {result}")
+            print("-" * 30)
+            
+        except KeyboardInterrupt:
+            print("\n\nGame interrupted. Thanks for playing!")
+            break
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    
+    # Final score
+    print("\nFinal Score:")
+    game.display_score()
+    print("Thanks for playing Rock Paper Scissors!")
+
+if __name__ == "__main__":
+    main()
