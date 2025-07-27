@@ -1,0 +1,9 @@
+# Rock Paper Scissors Game - Requirements
+# No external dependencies required for basic functionality
+# Python 3.6+ required
+
+# Development dependencies (optional)
+# unittest - Built into Python standard library
+# pytest>=6.0.0  # Alternative testing framework (optional)
+# black>=21.0.0   # Code formatter (optional)
+# flake8>=3.8.0   # Linter (optional)
