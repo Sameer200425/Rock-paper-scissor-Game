@@ -1,0 +1,121 @@
+"""
+Player Module
+Handles player input and computer AI
+"""
+
+import random
+
+class Player:
+    """Human player class"""
+    
+    def __init__(self, name="Player"):
+        """Initialize player"""
+        self.name = name
+    
+    def get_choice(self):
+        """
+        Get player's choice with input validation
+        
+        Returns:
+            str: Player's choice (rock, paper, scissors, quit, score)
+        """
+        while True:
+            choice = input(f"\n{self.name}, enter your choice: ").lower().strip()
+            
+            if choice in ['rock', 'paper', 'scissors', 'quit', 'score']:
+                return choice
+            elif choice in ['r', 'rock']:
+                return 'rock'
+            elif choice in ['p', 'paper']:
+                return 'paper'
+            elif choice in ['s', 'scissors']:
+                return 'scissors'
+            elif choice in ['q', 'exit']:
+                return 'quit'
+            else:
+                print("Invalid input! Please enter 'rock', 'paper', 'scissors', 'score', or 'quit'")
+                print("You can also use shortcuts: 'r' for rock, 'p' for paper, 's' for scissors")
+
+class ComputerPlayer:
+    """Computer AI player class"""
+    
+    CHOICES = ['rock', 'paper', 'scissors']
+    CHOICE_EMOJIS = {
+        'rock': '🪨',
+        'paper': '📄',
+        'scissors': '✂️'
+    }
+    
+    def __init__(self, difficulty='random'):
+        """
+        Initialize computer player
+        
+        Args:
+            difficulty (str): AI difficulty level ('random', 'adaptive')
+        """
+        self.difficulty = difficulty
+        self.opponent_history = []
+        self.last_choices = []
+    
+    def get_choice(self):
+        """
+        Get computer's choice based on difficulty level
+        
+        Returns:
+            str: Computer's choice
+        """
+        if self.difficulty == 'adaptive' and len(self.opponent_history) >= 3:
+            return self._adaptive_choice()
+        else:
+            return self._random_choice()
+    
+    def _random_choice(self):
+        """Make a random choice"""
+        choice = random.choice(self.CHOICES)
+        self._add_to_history(choice)
+        return choice
+    
+    def _adaptive_choice(self):
+        """
+        Make an adaptive choice based on opponent's patterns
+        This is a simple pattern-matching AI
+        """
+        # Analyze opponent's recent patterns
+        if len(self.opponent_history) >= 2:
+            # Look for the most common opponent choice
+            recent_choices = self.opponent_history[-5:]  # Last 5 moves
+            most_common = max(set(recent_choices), key=recent_choices.count)
+            
+            # Counter the most common choice
+            counters = {
+                'rock': 'paper',
+                'paper': 'scissors',
+                'scissors': 'rock'
+            }
+            
+            # Add some randomness (70% counter, 30% random)
+            if random.random() < 0.7:
+                choice = counters[most_common]
+            else:
+                choice = random.choice(self.CHOICES)
+        else:
+            choice = self._random_choice()
+        
+        self._add_to_history(choice)
+        return choice
+    
+    def _add_to_history(self, choice):
+        """Add choice to history for adaptive play"""
+        self.last_choices.append(choice)
+        if len(self.last_choices) > 10:  # Keep only last 10 choices
+            self.last_choices.pop(0)
+    
+    def update_opponent_history(self, opponent_choice):
+        """Update opponent's choice history for adaptive AI"""
+        self.opponent_history.append(opponent_choice)
+        if len(self.opponent_history) > 10:  # Keep only last 10 choices
+            self.opponent_history.pop(0)
+    
+    def get_choice_emoji(self, choice):
+        """Get emoji representation of choice"""
+        return self.CHOICE_EMOJIS.get(choice, choice)
